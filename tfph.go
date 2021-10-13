@@ -11,7 +11,7 @@ func ParseCompositeID(id string, numOfSplits int, separator ...string) ([]string
 		sep = separator[0]
 	}
 
-	parts := strings.SplitN(id, sep, numOfSplits)
+	parts := strings.Split(id, sep)
 
 	if len(parts) != numOfSplits {
 		return nil, fmt.Errorf("error: composite ID requires %d parts separated by a [%[2]s] (x%[2]sy)",

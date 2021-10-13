@@ -8,7 +8,7 @@ import (
 func GetStringValue(d *schema.ResourceData, valueName string) string {
 	var x string
 	if v, ok := d.GetOk(valueName); ok {
-		x := v.(string)
+		x = v.(string)
 		log.Printf("[DEBUG] %s: %s", valueName, x)
 	}
 
@@ -18,7 +18,7 @@ func GetStringValue(d *schema.ResourceData, valueName string) string {
 func GetIntValue(d *schema.ResourceData, valueName string) int {
 	var i int
 	if v, ok := d.GetOk(valueName); ok {
-		i := v.(int)
+		i = v.(int)
 		log.Printf("[DEBUG] %s: %d", valueName, i)
 	}
 
