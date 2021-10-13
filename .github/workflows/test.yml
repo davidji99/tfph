@@ -1,0 +1,35 @@
+name: ci
+on: [pull_request]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        go-version: [1.16.x, 1.17.x]
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    
+    steps:
+      - uses: actions/setup-go@v2.1.4
+        with:
+          go-version: ${{ matrix.go-version }}
+      - uses: actions/checkout@v2.3.4
+      
+      - name: Cache go modules
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Run go fmt
+        if: runner.os != 'Windows'
+        run: |
+          go fmt ./...
+          git diff --exit-code; code=$?; git checkout -- .; (exit $code)
+        
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Run go test
+        run: go test ./...
