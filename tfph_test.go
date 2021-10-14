@@ -1,6 +1,8 @@
 package tfph
 
 import (
+	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -44,4 +46,38 @@ func TestContainsString(t *testing.T) {
 func TestContainsString_Invalid(t *testing.T) {
 	tester := []string{"abc", "efd", "xyz"}
 	assert.Equal(t, false, ContainsString(tester, "a2bc"))
+}
+
+func TestDoesNotContainString(t *testing.T) {
+	tester := []string{"abc", "efd", "xyz"}
+	assert.Equal(t, true, DoesNotContainString(tester, "ab1c"))
+}
+
+func TestDoesNotContainString_Invalid(t *testing.T) {
+	tester := []string{"abc", "efd", "xyz"}
+	assert.Equal(t, false, DoesNotContainString(tester, "abc"))
+}
+
+func TestErrsFromDiags(t *testing.T) {
+	expected := fmt.Errorf("Severity: 0 | Summary: The summer of error one, | Detail: The Details of error one\nSeverity: 0 | Summary: The summer of error two, | Detail: The Details of error two\n")
+	diags := diag.Diagnostics{
+		{
+			Severity: diag.Error,
+			Summary:  "The summer of error one",
+			Detail:   "The Details of error one",
+		},
+		{
+			Severity: diag.Error,
+			Summary:  "The summer of error two",
+			Detail:   "The Details of error two",
+		},
+	}
+
+	assert.Equal(t, expected, ErrsFromDiags(diags))
+}
+
+func TestErrsFromDiags_NoErrors(t *testing.T) {
+	diags := diag.Diagnostics{}
+
+	assert.Equal(t, nil, ErrsFromDiags(diags))
 }
