@@ -2,6 +2,7 @@ package tfph
 
 import (
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"strings"
 )
 
@@ -28,4 +29,20 @@ func ContainsString(s []string, str string) bool {
 		}
 	}
 	return false
+}
+
+func DoesNotContainString(s []string, str string) bool {
+	return !ContainsString(s, str)
+}
+
+func ErrsFromDiags(diags diag.Diagnostics) error {
+	if !diags.HasError() {
+		return nil
+	}
+
+	var err string
+	for _, d := range diags {
+		err += fmt.Sprintf("Severity: %d | Summary: %s, | Detail: %s\n", d.Severity, d.Summary, d.Detail)
+	}
+	return fmt.Errorf(err)
 }
